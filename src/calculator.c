@@ -191,7 +191,9 @@ void handle_init(void) {
   GRect bounds;
   window = window_create();
   #ifndef PBL_COLOR
+  #if defined(PBL_SDK_2)
   window_set_fullscreen(window, true);
+  #endif
   #endif
   window_stack_push(window, true);
 
