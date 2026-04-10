@@ -81,7 +81,7 @@ void do_calc() {
 }
 
 void display_layer_update_callback(Layer *me, GContext* ctx) {
-  int xoff = 0, yoff = 0;
+  int xoff = 1, yoff = -8;
   #ifdef PBL_ROUND
   xoff = 19;
   yoff = -5;
@@ -199,16 +199,17 @@ void handle_init(void) {
 
   window_set_background_color(window, GColorBlack);
   window_layer = window_get_root_layer(window);
-  bounds = layer_get_bounds(window_layer);
+  StatusBarLayer *status_bar = status_bar_layer_create();
+  layer_add_child(window_layer, status_bar_layer_get_layer(status_bar));
+
+  bounds = layer_get_unobstructed_bounds(window_layer); // Get full screen 144x168
   background = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
   bitmap_layer = bitmap_layer_create(bounds);
   bitmap_layer_set_bitmap(bitmap_layer, background);
+  bitmap_layer_set_alignment(bitmap_layer, GAlignTopLeft);
   layer_add_child(window_layer, bitmap_layer_get_layer(bitmap_layer));
 
-  // Init the layer for the display
-  display_layer = layer_create( PBL_IF_ROUND_ELSE(
-    grect_inset(bounds, GEdgeInsets(10, -20, 0, 0)),
-    bounds ) );
+  display_layer = layer_create(bounds); 
   layer_set_update_proc(display_layer, display_layer_update_callback);
   layer_add_child(window_layer, display_layer);
 
